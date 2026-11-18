@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="ro" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Auto Service — Service Auto & Diagnoză Computerizată</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['"Space Grotesk"', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        accent: '#D90429',
+                        accentHover: '#B50322',
+                        lightBg: '#FFFFFF',
+                        lightSurface: '#F4F5F7',
+                        lightText: '#111315',
+                        lightMuted: '#525866',
+                        lightBorder: '#E2E4E8',
+                        darkBg: '#0F1115',
+                        darkSurface: '#16191F',
+                        darkText: '#F3F4F6',
+                        darkMuted: '#9CA3AF',
+                        darkBorder: '#262A33',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            border-radius: 0px !important;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .hero-title {
+            font-size: clamp(2.1rem, 4.5vw, 3.6rem);
+            line-height: 1.08;
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 3vw, 2.5rem);
+            line-height: 1.15;
+        }
+
+        input[type="checkbox"].sharp-check {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid #8E95A2;
+            background-color: transparent;
+            cursor: pointer;
+            display: inline-grid;
+            place-content: center;
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+
+        input[type="checkbox"].sharp-check:checked {
+            background-color: #D90429;
+            border-color: #D90429;
+        }
+
+        input[type="checkbox"].sharp-check:checked::before {
+            content: "";
+            width: 11px;
+            height: 11px;
+            background-color: #FFFFFF;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        .dark input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+        }
+    </style>
+    <script>
+            (function () {
+                const savedTheme = localStorage.getItem('pas-theme');
+                if (savedTheme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            })();
+    </script>
+</head>
+
+<body
+    class="bg-lightBg text-lightText dark:bg-darkBg dark:text-darkText antialiased selection:bg-accent selection:text-white">
+
+    <header
+        class="sticky top-0 z-50 bg-lightBg/95 dark:bg-darkBg/95 backdrop-blur-sm border-b border-lightBorder dark:border-darkBorder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20">
+
+                <a href="#" class="flex items-center gap-3 min-h-[44px]">
+                    <div class="w-9 h-9 bg-accent flex items-center justify-center shrink-0">
+                        <div class="w-4 h-4 border-2 border-white"></div>
+                    </div>
+                    <div class="leading-none">
+                        <span class="font-display font-bold text-lg sm:text-xl tracking-tight uppercase block">
+                            PROMPT <span class="text-accent">AUTO</span>
+                        </span>
+                        <span
+                            class="font-mono text-[10px] tracking-[0.18em] text-lightMuted dark:text-darkMuted uppercase block mt-0.5">
+                            SERVICE & DIAGNOZĂ
+                        </span>
+                    </div>
+                </a>
+
+                <nav class="hidden lg:flex items-center space-x-1 text-sm font-medium">
+                    <a href="#servicii"
+                        class="px-4 py-2.5 text-lightMuted dark:text-darkMuted hover:text-lightText dark:hover:text-white transition-colors">
+                        Servicii
+                    </a>
+                    <a href="#calculator"
+                        class="px-4 py-2.5 text-lightMuted dark:text-darkMuted hover:text-lightText dark:hover:text-white transition-colors">
+                        Calculator Deviz
+                    </a>
+                    <a href="#proces"
+                        class="px-4 py-2.5 text-lightMuted dark:text-darkMuted hover:text-lightText dark:hover:text-white transition-colors">
+                        Standarde Tehnice
+                    </a>
+                    <a href="#programare"
+                        class="px-4 py-2.5 text-lightMuted dark:text-darkMuted hover:text-lightText dark:hover:text-white transition-colors">
+                        Programare
+                    </a>
+                </nav>
+
+                <div class="flex items-center gap-2 sm:gap-3">
+
+                    <button id="theme-toggle" type="button" aria-label="Comută tema Light/Dark"
+                        class="min-h-[44px] px-3 sm:px-3.5 border border-lightBorder dark:border-darkBorder bg-lightSurface dark:bg-darkSurface hover:border-accent dark:hover:border-accent flex items-center gap-2 font-mono text-xs font-semibold uppercase transition-colors">
+                        <svg id="icon-sun" class="hidden w-4 h-4 text-accent" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <rect x="8" y="8" width="8" height="8" />
+                            <path stroke-linecap="square"
+                                d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M19.07 4.93l-2.12 2.12M7.05 16.95l-2.12 2.12" />
+                        </svg>
+                        <svg id="icon-moon" class="w-4 h-4 text-accent" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="square" stroke-linejoin="miter"
+                                d="M20 14.5A8.5 8.5 0 019.5 4c0-.7.08-1.38.24-2A9.5 9.5 0 1022 14.26c-.62.16-1.3.24-2 .24z" />
+                        </svg>
+                        <span id="theme-label">DARK</span>
+                    </button>
+
+                    <a href="tel:+40722123456"
+                        class="hidden sm:inline-flex items-center gap-2 min-h-[44px] px-4 bg-accent hover:bg-accentHover text-white font-mono text-xs font-semibold tracking-wide transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="square"
+                                d="M22 16.92v3a1 1 0 01-1.09 1 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A1 1 0 014.11 2h3a1 1 0 011 .75c.12.72.3 1.43.54 2.11a1 1 0 01-.23 1.01L7.09 7.2a16 16 0 006 6l1.33-1.33a1 1 0 011.01-.23c.68.24 1.39.42 2.11.54a1 1 0 01.75 1.01z" />
+                        </svg>
+                        <span>0722 123 456</span>
+                    </a>
+
+                    <button id="mobile-menu-toggle" type="button" aria-label="Deschide meniul" aria-expanded="false"
+                        class="lg:hidden min-w-[44px] min-h-[44px] border border-lightBorder dark:border-darkBorder bg-lightSurface dark:bg-darkSurface hover:border-accent flex items-center justify-center transition-colors">
+                        <svg id="hamburger-icon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="square" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg id="close-icon" class="hidden w-5 h-5 text-accent" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="square" d="M6 6l12 12M18 6L6 18" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-drawer"
+            class="hidden lg:hidden border-t border-lightBorder dark:border-darkBorder bg-lightBg dark:bg-darkBg">
+            <nav class="px-4 py-4 space-y-1">
+                <a href="#servicii"
+                    class="mobile-nav-link block min-h-[44px] flex items-center px-3 font-medium text-base border-l-2 border-transparent hover:border-accent hover:bg-lightSurface dark:hover:bg-darkSurface">
+                    Servicii & Tarife
+                </a>
+                <a href="#calculator"
+                    class="mobile-nav-link block min-h-[44px] flex items-center px-3 font-medium text-base border-l-2 border-transparent hover:border-accent hover:bg-lightSurface dark:hover:bg-darkSurface">
+                    Calculator Deviz
+                </a>
+                <a href="#proces"
+                    class="mobile-nav-link block min-h-[44px] flex items-center px-3 font-medium text-base border-l-2 border-transparent hover:border-accent hover:bg-lightSurface dark:hover:bg-darkSurface">
+                    Standarde Tehnice
+                </a>
+                <a href="#programare"
+                    class="mobile-nav-link block min-h-[44px] flex items-center px-3 font-medium text-base border-l-2 border-transparent hover:border-accent hover:bg-lightSurface dark:hover:bg-darkSurface">
+                    Programare Online
+                </a>
+                <div class="pt-3 mt-2 border-t border-lightBorder dark:border-darkBorder">
+                    <a href="tel:+40722123456"
+                        class="w-full min-h-[48px] bg-accent text-white font-mono text-sm font-semibold flex items-center justify-center gap-2">
+                        <span>SUNĂ ACUM: 0722 123 456</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="border-b border-lightBorder dark:border-darkBorder py-14 sm:py-20 lg:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+
+                <div class="lg:col-span-7 space-y-6">
+                    <div
+                        class="inline-flex items-center gap-2.5 border border-lightBorder dark:border-darkBorder bg-lightSurface dark:bg-darkSurface px-3 py-1.5 font-mono text-xs">
+                        <span class="w-2 h-2 bg-accent inline-block"></span>
+                        <span class="text-lightMuted dark:text-darkMuted uppercase tracking-wider">ATELIER AUTORIZAT
+                            RAR</span>
+                    </div>
+
+                    <h1 class="hero-title font-display font-bold tracking-tight">
+                        Service Auto & <span class="text-accent">Diagnoză Computerizată</span> de Precizie.
+                    </h1>
+
+                    <p class="text-lightMuted dark:text-darkMuted text-base sm:text-lg max-w-2xl leading-relaxed">
+                        Mentenanță preventivă, mecanică de precizie și diagnoză electronică la standarde de
+                        reprezentanță. Fiecare lucrare începe cu o constatare clară și un deviz aprobat de tine înainte
+                        de intervenție.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-3.5 pt-2">
+                        <a href="#programare"
+                            class="min-h-[48px] px-7 bg-accent hover:bg-accentHover text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+                            <span>Programează o Vizită</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="square" d="M5 12h14M13 6l6 6-6 6" />
+                            </svg>
+                        </a>
+                        <a href="#calculator"
+                            class="min-h-[48px] px-7 border border-lightBorder dark:border-darkBorder bg-lightSurface dark:bg-darkSurface hover:border-accent dark:hover:border-accent font-semibold text-sm flex items-center justify-center transition-colors">
+                            Calculează Deviz Estimativ
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5">
+                    <div
+                        class="border border-lightBorder dark:border-darkBorder bg-lightSurface dark:bg-darkSurface p-6 sm:p-8">
+                        <div
+                            class="flex items-center justify-between border-b border-lightBorder dark:border-darkBorder pb-4 mb-6">
+                            <span
+                                class="font-mono text-xs font-semibold uppercase tracking-wider text-lightMuted dark:text-darkMuted">
+                                FIȘĂ TEHNICĂ ATELIER
+                            </span>
+                            <span class="font-mono text-xs font-bold text-accent">PAS / RO</span>
+                        </div>
+
+                        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="border-l-2 border-accent pl-3.5">
+                                <dt class="font-mono text-xs text-lightMuted dark:text-darkMuted uppercase">Program
+                                    Lucru</dt>
+                                <dd class="font-display font-bold text-lg mt-1">L–V: 08:00 – 18:00</dd>
+                                <dd class="text-xs text-lightMuted dark:text-darkMuted mt-0.5">Sâmbătă: 09:00 – 14:00
+                                </dd>
+                            </div>
+
+                            <div class="border-l-2 border-lightBorder dark:border-darkBorder pl-3.5">
+                                <dt class="font-mono text-xs text-lightMuted dark:text-darkMuted uppercase">Acoperire
+                                    Auto</dt>
+                                <dd class="font-display font-bold text-lg mt-1">Multimarcă & Hybrid</dd>
+                                <dd class="text-xs text-lightMuted dark:text-darkMuted mt-0.5">Testere OEM & Pass-Thru
+                                </dd>
+                            </div>
+
+                            <div class="border-l-2 border-lightBorder dark:border-darkBorder pl-3.5">
+                                <dt class="font-mono text-xs text-lightMuted dark:text-darkMuted uppercase">Garanție
+                                    Lucrări</dt>
+                                <dd class="font-display font-bold text-lg mt-1">24 Luni</dd>
+                                <dd class="text-xs text-lightMuted dark:text-darkMuted mt-0.5">Piese OE & Manoperă</dd>
+                            </div>
+
+                            <div class="border-l-2 border-accent pl-3.5">
+                                <dt class="font-mono text-xs text-lightMuted dark:text-darkMuted uppercase">Constatare
+                                    Rapidă</dt>
+                                <dd class="font-display font-bold text-lg mt-1">~ 45 Minute</dd>
+                                <dd class="text-xs text-lightMuted dark:text-darkMuted mt-0.5">Raport scris & deviz</dd>
+                            </div>
+                        </dl>
+
+                        <div
+                            class="mt-6 pt-5 border-t border-lightBorder dark:border-darkBorder flex items-center justify-between text-xs font-mono text-lightMuted dark:text-darkMuted">
+                            <span>ADRESĂ: ȘOS. INDUSTRIILOR 48, BUCUREȘTI</span>
+                            <span class="text-accent font-bold">6 RAMPE</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="servicii" class="py-16 sm:py-24 border-b border-lightBorder dark:border-darkBorder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+                <div>
+                    <span class="font-mono text-xs font-semibold text-accent uppercase tracking-wider">01 / CATALOG
+                        OPERAȚIUNI</span>
+                    <h2 class="section-title font-display font-bold mt-1">Servicii & Tarife Orientative</h2>
+                </div>
+
+                <div class="flex flex-wrap gap-2" role="tablist" aria-label="Filtrare servicii">
+                    <button type="button" data-filter="all"
+                        class="srv-filter-btn min-h-[44px] px-4 font-mono text-xs font-semibold uppercase border border-accent bg-accent text-white transition-colors">
+                        Toate
+                    </button>
+                    <button type="button" data-filter="mecanica"
+                        class="srv-filter-btn min-h-[44px] px-4 font-mono text-xs font-semibold uppercase border border-lightBorder dark:border-darkBorder bg-lightSurface dark:bg-darkSurface hover:border-accent transition-colors">
+                        Mecanică
+                    </button>
+                    <button type="button" data-filter="diagnoza"
+                        class="srv-filter-btn min-h-[44px] px-4 font-mono text-xs font-semibold uppercase border border-lightBorder dark:border-darkBorder bg-lightSurface dark:bg-darkSurface hover:border-accent transition-colors">
+                        Diagnoză & Electrică
+                    </button>
+                    <button type="button" data-filter="revizii"
+                        class="srv-filter-btn min-h-[44px] px-4 font-mono text-xs font-semibold uppercase border border-lightBorder dark:border-darkBorder bg-lightSurface dark:bg-darkSurface hover:border-accent transition-colors">
+                        Revizii & Clima
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="services-container">
+
+                <article data-cat="revizii"
+                    class="srv-card border border-lightBorder dark:border-darkBorder bg-lightBg dark:bg-darkSurface p-6 flex flex-col justify-between hover:border-accent dark:hover:border-accent transition-colors">
+                    <div>
+                        <div class="flex items-center justify-between font-mono text-xs mb-4">
+                            <span
+                                class="px-2 py-0.5 bg-lightSurface dark:bg-darkBg border border-lightBorder dark:border-darkBorder font-semibold">SRV-01</span>
+                            <span class="text-lightMuted dark:text-darkMuted">DURATĂ: ~1.5 ORE</span>
+                        </div>
+                        <h3 class="font-display font-bold text-xl">Revizie Periodică Ulei & Filtre</h3>
+                        <p class="text-sm text-lightMuted dark:text-darkMuted mt-2.5 leading-relaxed">
+                            Înlocuire ulei motor conform normei producătorului, filtre (ulei, aer, polen, combustibil),
+                            resetare interval service și inspecție vizuală rampă.
+                        </p>
+                    </div>
+                    <div
+                        class="mt-6 pt-4 border-t border-lightBorder dark:border-darkBorder flex items-center justify-between">
+                        <div>
+                            <span
+                                class="block font-mono text-[11px] text-lightMuted dark:text-darkMuted uppercase">Manoperă
+                                de la</span>
+                            <span class="font-display font-bold text-xl text-accent">250 RON</span>
+                        </div>
+                        <button type="button" onclick="quickAddService('ulei')"
+                            class="min-h-[44px] px-4 border border-lightBorder dark:border-darkBorder hover:border-accent hover:text-accent font-mono text-xs font-semibold uppercase transition-colors">
+                            + Adaugă în deviz
+                        </button>
+                    </div>
+                </article>
+
+                <article data-cat="diagnoza"
+                    class="srv-card border border-lightBorder dark:border-darkBorder bg-lightBg dark:bg-darkSurface p-6 flex flex-col justify-between hover:border-accent dark:hover:border-accent transition-colors">
+                    <div>
+                        <div class="flex items-center justify-between font-mono text-xs mb-4">
+                            <span
+                                class="px-2 py-0.5 bg-lightSurface dark:bg-darkBg border border-lightBorder dark:border-darkBorder font-semibold">SRV-02</span>
+                            <span class="text-lightMuted dark:text-darkMuted">DURATĂ: ~45 MIN</span>
+                        </div>
+                        <h3 class="font-display font-bold text-xl">Diagnoză Computerizată OBD-II</h3>
+                        <p class="text-sm text-lightMuted dark:text-darkMuted mt-2.5 leading-relaxed">
+                            Scanare completă module electronice (motor, cutie, ABS, airbag), interpretare parametri
+                            live, verificare injectoare și regenerare filtru DPF.
+                        </p>
+                    </div>
+                    <div
+                        class="mt-6 pt-4 border-t border-lightBorder dark:border-darkBorder flex items-center justify-between">
+                        <div>
+                            <span
+                                class="block font-mono text-[11px] text-lightMuted dark:text-darkMuted uppercase">Tarif
+                                fix</span>
+                            <span class="font-display font-bold text-xl text-accent">180 RON</span>
+                        </div>
+                        <button type="button" onclick="quickAddService('diagnoza')"
+                            class="min-h-[44px] px-4 border border-lightBorder dark:border-darkBorder hover:border-accent hover:text-accent font-mono text-xs font-semibold uppercase transition-colors">
+                            + Adaugă în deviz
+                        </button>
+                    </div>
+                </article>
+
+                <article data-cat="mecanica"
+                    class="srv-card border border-lightBorder dark:border-darkBorder bg-lightBg dark:bg-darkSurface p-6 flex flex-col justify-between hover:border-accent dark:hover:border-accent transition-colors">
+                    <div>
+                        <div class="flex items-center justify-between font-mono text-xs mb-4">
+                            <span
+                                class="px-2 py-0.5 bg-lightSurface dark:bg-darkBg border border-lightBorder dark:border-darkBorder font-semibold">SRV-03</span>
+                            <span class="text-lightMuted dark:text-darkMuted">DURATĂ: ~1.5 ORE</span>
+                        </div>
+                        <h3 class="font-display font-bold text-xl">Sistem Frânare (Discuri & Plăcuțe)</h3>
+                        <p class="text-sm text-lightMuted dark:text-darkMuted mt-2.5 leading-relaxed">
+                            Înlocuire discuri și plăcuțe frână față/spate, curățare și gresare culise etrieri, retracție
+                            electronică frână de parcare și test lichid frână.
+                        </p>
+                    </div>
+                    <div
+                        class="mt-6 pt-4 border-t border-lightBorder dark:border-darkBorder flex items-center justify-between">
+                        <div>
+                            <span
+                                class="block font-mono text-[11px] text-lightMuted dark:text-darkMuted uppercase">Manoperă
+                                / punte</span>
+                            <span class="font-display font-bold text-xl text-accent">220 RON</span>
+                        </div>
+                        <button type="button" onclick="quickAddService('frane')"
+                            class="min-h-[44px] px-4 border border-lightBorder dark:border-darkBorder hover:border-accent hover:text-accent font-mono text-xs font-semibold uppercase transition-colors">
+                            + Adaugă în deviz
+                        </button>
+                    </div>
+                </article>
+
+                <article data-cat="mecanica"
+                    class="srv-card border border-lightBorder dark:border-darkBorder bg-lightBg dark:bg-darkSurface p-6 flex flex-col justify-between hover:border-accent dark:hover:border-accent transition-colors">
+                    <div>
+                        <div class="flex items-center justify-between font-mono text-xs mb-4">
+                            <span
+                                class="px-2 py-0.5 bg-lightSurface dark:bg-darkBg border border-lightBorder dark:border-darkBorder font-semibold">SRV-04</span>
+                            <span class="text-lightMuted dark:text-darkMuted">DURATĂ: ~1 ORĂ</span>
+                        </div>
+                        <h3 class="font-display font-bold text-xl">Geometrie Roți 3D & Suspensie</h3>
+                        <p class="text-sm text-lightMuted dark:text-darkMuted mt-2.5 leading-relaxed">
+                            Reglaj unghiuri de fugă, cădere și convergență pe stand computerizat 3D. Previne uzura
+                            neuniformă a anvelopelor și îmbunătățește stabilitatea.
+                        </p>
+                    </div>
+                    <div
+                        class="mt-6 pt-4 border-t border-lightBorder dark:border-darkBorder flex items-center justify-between">
+                        <div>
+                            <span
+                                class="block font-mono text-[11px] text-lightMuted dark:text-darkMuted uppercase">Tarif
+                                față/spate</span>
+                            <span class="font-display font-bold text-xl text-accent">200 RON</span>
+                        </div>
+                        <button type="button" onclick="quickAddService('geometrie')"
+                            class="min-h-[44px] px-4 border border-lightBorder dark:border-darkBorder hover:border-accent hover:text-accent font-mono text-xs font-semibold uppercase transition-colors">
+                            + Adaugă în deviz
+                        </button>
+                    </div>
+                </article>
+
+                <article data-cat="revizii"
+                    class="srv-card border border-lightBorder dark:border-darkBorder bg-lightBg dark:bg-darkSurface p-6 flex flex-col justify-between hover:border-accent dark:hover:border-accent transition-colors">
+                    <div>
+                        <div class="flex items-center justify-between font-mono text-xs mb-4">
+                            <span
+                                class="px-2 py-0.5 bg-lightSurface dark:bg-darkBg border border-lightBorder dark:border-darkBorder font-semibold">SRV-05</span>
+                            <span class="text-lightMuted dark:text-darkMuted">DURATĂ: ~50 MIN</span>
+                        </div>
+                        <h3 class="font-display font-bold text-xl">Încărcare Freon & Igienizare AC</h3>
+                        <p class="text-sm text-lightMuted dark:text-darkMuted mt-2.5 leading-relaxed">
+                            Recuperare agent frigorific (R134a / R1234yf), vacuumare instalație, test etanșeitate,
+                            completare ulei compresor și igienizare habitaclu.
+                        </p>
+                    </div>
+                    <div
+                        class="mt-6 pt-4 border-t border-lightBorder dark:border-darkBorder flex items-center justify-between">
+                        <div>
+                            <span
+                                class="block font-mono text-[11px] text-lightMuted dark:text-darkMuted uppercase">Tarif
+                                de la</span>
+                            <span class="font-display font-bold text-xl text-accent">200 RON</span>
+                        </div>
+                        <button type="button" onclick="quickAddService('clima')"
+                            class="min-h-[44px] px-4 border border-lightBorder dark:border-darkBorder hover:border-accent hover:text-accent font-mono text-xs font-semibold uppercase transition-colors">
+                            + Adaugă în deviz
+                        </button>
+                    </div>
+                </article>
+
+                <article data-cat="diagnoza"
+                    class="srv-card border border-lightBorder dark:border-darkBorder bg-lightBg dark:bg-darkSurface p-6 flex flex-col justify-between hover:border-accent dark:hover:border-accent transition-colors">
+                    <div>
+                        <div class="flex items-center justify-between font-mono text-xs mb-4">
+                            <span
+                                class="px-2 py-0.5 bg-lightSurface dark:bg-darkBg border border-lightBorder dark:border-darkBorder font-semibold">SRV-06</span>
+                            <span class="text-lightMuted dark:text-darkMuted">DURATĂ: ~1 ORĂ</span>
+                        </div>
+                        <h3 class="font-display font-bold text-xl">Verificare Tehnică Achiziție Auto</h3>
+                        <p class="text-sm text-lightMuted dark:text-darkMuted mt-2.5 leading-relaxed">
+                            Inspecție completă în 40 de puncte înainte de cumpărare: diagnoză electronică, verificare
+                            grosime vopsea, articulații, scurgeri și test frâne.
+                        </p>
+                    </div>
+                    <div
+                        class="mt-6 pt-4 border-t border-lightBorder dark:border-darkBorder flex items-center justify-between">
+                        <div>
+                            <span
+                                class="block font-mono text-[11px] text-lightMuted dark:text-darkMuted uppercase">Pachet
+                                complet</span>
+                            <span class="font-display font-bold text-xl text-accent">300 RON</span>
+                        </div>
+                        <button type="button" onclick="quickAddService('verificare')"
+                            class="min-h-[44px] px-4 border border-lightBorder dark:border-darkBorder hover:border-accent hover:text-accent font-mono text-xs font-semibold uppercase transition-colors">
+                            + Adaugă în deviz
+                        </button>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="calculator"
+        class="py-16 sm:py-24 bg-lightSurface dark:bg-darkSurface border-b border-lightBorder dark:border-darkBorder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="mb-10">
+                <span class="font-mono text-xs font-semibold text-accent uppercase tracking-wider">02 / ESTIMATOR
+                    COSTURI</span>
+                <h2 class="section-title font-display font-bold mt-1">Calculator Deviz Manoperă</h2>
+                <p class="text-lightMuted dark:text-darkMuted text-sm sm:text-base mt-2 max-w-2xl">
+                    Selectează tipul de motorizare și operațiunile dorite pentru o estimare rapidă a costului de
+                    manoperă și a duratei de execuție.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                <div
+                    class="lg:col-span-7 bg-lightBg dark:bg-darkBg border border-lightBorder dark:border-darkBorder p-6 sm:p-8 space-y-8">
+
+                    <div>
+                        <label
+                            class="block font-mono text-xs font-semibold uppercase text-lightMuted dark:text-darkMuted mb-3">
+                            1. Selectează Motorizarea Vehiculului
+                        </label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <label class="cursor-pointer">
+                                <input type="radio" name="fuel_type" value="1.0" checked class="sr-only peer"
+                                    onchange="updateEstimator()">
+                                <div
+                                    class="min-h-[48px] border border-lightBorder dark:border-darkBorder bg-lightSurface dark:bg-darkSurface peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white flex flex-col items-center justify-center p-2.5 text-center transition-colors">
+                                    <span class="font-semibold text-sm">Benzină</span>
+                                    <span class="font-mono text-[10px] opacity-80">Standard</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="fuel_type" value="1.15" class="sr-only peer"
+                                    onchange="updateEstimator()">
+                                <div
+                                    class="min-h-[48px] border border-lightBorder dark:border-darkBorder bg-lightSurface dark:bg-darkSurface peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white flex flex-col items-center justify-center p-2.5 text-center transition-colors">
+                                    <span class="font-semibold text-sm">Diesel</span>
+                                    <span class="font-mono text-[10px] opacity-80">+15%</span>
+                                </div>
+                            </label>
+                            <label class="cursor-pointer">
+                                <input type="radio" name="fuel_type" value="1.20" class="sr-only peer"
+                                    onchange="updateEstimator()">
+                                <div
+                                    class="min-h-[48px] border border-lightBorder dark:border-darkBorder bg-lightSurface dark:bg-darkSurface peer-checked:border-accent peer-checked:bg-accent peer-checked:text-white flex flex-col items-center justify-center p-2.5 text-center transition-colors">
+                                    <span class="font-semibold text-sm">Hybrid</span>
+                                    <span class="font-mono text-[10px] opacity-80">+20%</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <label
+                                class="font-mono text-xs font-semibold uppercase text-lightMuted dark:text-darkMuted">
+                                2. Bifează Operațiunile Dorite
+                            </label>
+                            <button type="button" onclick="clearEstimator()"
+                                class="font-mono text-xs text-accent hover:underline">
+                                Resetează
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="estimator-list">
+                            <label
+                                class="min-h-[54px] flex items-center gap-3 p-3.5 border border-lightBorder dark:border-darkBorder hover:border-accent cursor-pointer transition-colors">
+                                <input type="checkbox" class="sharp-check" data-key="ulei"
+                                    data-title="Schimb Ulei & Filtre" data-cost="250" data-time="1.5" checked
+                                    onchange="updateEstimator()">
+                                <div class="flex-1">
+                                    <span class="block text-sm font-medium">Schimb Ulei & Filtre</span>
+                                    <span class="font-mono text-xs text-lightMuted dark:text-darkMuted">250 RON •
+                                        1.5h</span>
+                                </div>
+                            </label>
+
+                            <label
+                                class="min-h-[54px] flex items-center gap-3 p-3.5 border border-lightBorder dark:border-darkBorder hover:border-accent cursor-pointer transition-colors">
+                                <input type="checkbox" class="sharp-check" data-key="diagnoza"
+                                    data-title="Diagnoză Computerizată OBD" data-cost="180" data-time="0.75"
+                                    onchange="updateEstimator()">
+                                <div class="flex-1">
+                                    <span class="block text-sm font-medium">Diagnoză Computerizată OBD</span>
+                                    <span class="font-mono text-xs text-lightMuted dark:text-darkMuted">180 RON •
+                                        45m</span>
+                                </div>
+                            </label>
+
+                            <label
+                                class="min-h-[54px] flex items-center gap-3 p-3.5 border border-lightBorder dark:border-darkBorder hover:border-accent cursor-pointer transition-colors">
+                                <input type="checkbox" class="sharp-check" data-key="frane"
+                                    data-title="Plăcuțe & Discuri Frână" data-cost="220" data-time="1.5"
+                                    onchange="updateEstimator()">
+                                <div class="flex-1">
+                                    <span class="block text-sm font-medium">Plăcuțe & Discuri Frână</span>
+                                    <span class="font-mono text-xs text-lightMuted dark:text-darkMuted">220 RON •
+                                        1.5h</span>
+                                </div>
+                            </label>
+
+                            <label
+                                class="min-h-[54px] flex items-center gap-3 p-3.5 border border-lightBorder dark:border-darkBorder hover:border-accent cursor-pointer transition-colors">
+                                <input type="checkbox" class="sharp-check" data-key="geometrie"
+                                    data-title="Geometrie Roți 3D" data-cost="200" data-time="1.0"
+                                    onchange="updateEstimator()">
+                                <div class="flex-1">
+                                    <span class="block text-sm font-medium">Geometrie Roți 3D</span>
+                                    <span class="font-mono text-xs text-lightMuted dark:text-darkMuted">200 RON •
+                                        1.0h</span>
+                                </div>
+                            </label>
+
+                            <label
+                                class="min-h-[54px] flex items-center gap-3 p-3.5 border border-lightBorder dark:border-darkBorder hover:border-accent cursor-pointer transition-colors">
+                                <input type="checkbox" class="sharp-check" data-key="clima"
+                                    data-title="Încărcare Freon AC" data-cost="200" data-time="0.8"
+                                    onchange="updateEstimator()">
+                                <div class="flex-1">
+                                    <span class="block text-sm font-medium">Încărcare Freon AC</span>
+                                    <span class="font-mono text-xs text-lightMuted dark:text-darkMuted">200 RON •
+                                        50m</span>
+                                </div>
+                            </label>
+
+                            <label
+                                class="min-h-[54px] flex items-center gap-3 p-3.5 border border-lightBorder dark:border-darkBorder hover:border-accent cursor-pointer transition-colors">
+                                <input type="checkbox" class="sharp-check" data-key="verificare"
+                                    data-title="Verificare Tehnică Completă" data-cost="300" data-time="1.0"
+                                    onchange="updateEstimator()">
+                                <div class="flex-1">
+                                    <span class="block text-sm font-medium">Verificare Tehnică Completă</span>
+                                    <span class="font-mono text-xs text-lightMuted dark:text-darkMuted">300 RON •
+                                        1.0h</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="lg:col-span-5 bg-lightBg dark:bg-darkBg border border-lightBorder dark:border-darkBorder p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <div
+                            class="flex items-center justify-between border-b border-lightBorder dark:border-darkBorder pb-4">
+                            <span class="font-mono text-xs font-bold uppercase">SUMAR ESTIMARE</span>
+                            <span class="font-mono text-xs text-lightMuted dark:text-darkMuted">TVA INCLUS</span>
+                        </div>
+
+                        <div class="py-4 border-b border-lightBorder dark:border-darkBorder">
+                            <ul id="summary-items" class="space-y-2 text-sm"></ul>
+                        </div>
+
+                        <div class="py-5 space-y-2.5">
+                            <div class="flex justify-between text-sm text-lightMuted dark:text-darkMuted">
+                                <span>Timp estimat în service:</span>
+                                <span id="summary-time"
+                                    class="font-mono font-semibold text-lightText dark:text-darkText">1.5 ore</span>
+                            </div>
+                            <div class="flex justify-between items-baseline pt-2">
+                                <span class="font-semibold text-base">Total Estimat Manoperă:</span>
+                                <div class="font-display font-bold text-3xl sm:text-4xl text-accent">
+                                    <span id="summary-total">250</span> <span
+                                        class="text-base font-mono text-lightText dark:text-darkText">RON</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 pt-2">
+                        <button type="button" onclick="sendEstimateToForm()"
+                            class="w-full min-h-[48px] px-6 bg-accent hover:bg-accentHover text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
+                            <span>Trimite în Formularul de Programare</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="square" d="M12 5v14M6 13l6 6 6-6" />
+                            </svg>
+                        </button>
+                        <p class="text-xs text-lightMuted dark:text-darkMuted leading-relaxed">
+                            * Prețul final al pieselor se stabilește exact după identificarea după seria de șasiu (VIN).
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="proces" class="py-16 sm:py-24 border-b border-lightBorder dark:border-darkBorder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-12">
+                <span class="font-mono text-xs font-semibold text-accent uppercase tracking-wider">03 / METODOLOGIE DE
+                    LUCRU</span>
+                <h2 class="section-title font-display font-bold mt-1">Standarde Tehnice Prompt Auto</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="border border-lightBorder dark:border-darkBorder bg-lightBg dark:bg-darkSurface p-6">
+                    <div
+                        class="font-mono text-sm font-bold text-accent mb-4 pb-3 border-b border-lightBorder dark:border-darkBorder">
+                        01 / TRANSPARENȚĂ
+                    </div>
+                    <h3 class="font-display font-bold text-lg">Constatare cu Deviz Prealabil</h3>
+                    <p class="text-sm text-lightMuted dark:text-darkMuted mt-2.5 leading-relaxed">
+                        Nu începem nicio reparație fără acordul tău scris sau telefonic. Primești lista clară cu
+                        manopera și opțiunile de piese.
+                    </p>
+                </div>
+
+                <div class="border border-lightBorder dark:border-darkBorder bg-lightBg dark:bg-darkSurface p-6">
+                    <div
+                        class="font-mono text-sm font-bold text-accent mb-4 pb-3 border-b border-lightBorder dark:border-darkBorder">
+                        02 / ECHIPAMENTE
+                    </div>
+                    <h3 class="font-display font-bold text-lg">Calibrare & Diagnoză OEM</h3>
+                    <p class="text-sm text-lightMuted dark:text-darkMuted mt-2.5 leading-relaxed">
+                        Utilizăm interfețe de diagnoză licențiate, stand geometrie 3D și chei dinamometrice calibrate
+                        pentru strângeri la cuplu exact.
+                    </p>
+                </div>
+
+                <div class="border border-lightBorder dark:border-darkBorder bg-lightBg dark:bg-darkSurface p-6">
+                    <div
+                        class="font-mono text-sm font-bold text-accent mb-4 pb-3 border-b border-lightBorder dark:border-darkBorder">
+                        03 / COMPONENTE
+                    </div>
+                    <h3 class="font-display font-bold text-lg">Piese Originale sau Echivalent OE</h3>
+                    <p class="text-sm text-lightMuted dark:text-darkMuted mt-2.5 leading-relaxed">
+                        Lucrăm exclusiv cu furnizori consacrați (Bosch, ATE, Mann, Continental, Lemförder, ZF) cu
+                        trasabilitate completă.
+                    </p>
+                </div>
+
+                <div class="border border-lightBorder dark:border-darkBorder bg-lightBg dark:bg-darkSurface p-6">
+                    <div
+                        class="font-mono text-sm font-bold text-accent mb-4 pb-3 border-b border-lightBorder dark:border-darkBorder">
+                        04 / GARANȚIE
+                    </div>
+                    <h3 class="font-display font-bold text-lg">Istoric Service Digital</h3>
+                    <p class="text-sm text-lightMuted dark:text-darkMuted mt-2.5 leading-relaxed">
+                        Fiecare intervenție este arhivată în baza noastră de date pe baza seriei VIN, oferind garanție
+                        de 24 de luni și dovadă la revânzare.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="programare"
+        class="py-16 sm:py-24 bg-lightSurface dark:bg-darkSurface border-b border-lightBorder dark:border-darkBorder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="mb-10">
+                <span class="font-mono text-xs font-semibold text-accent uppercase tracking-wider">04 / REZERVARE
+                    RAMPĂ</span>
+                <h2 class="section-title font-display font-bold mt-1">Programare Service</h2>
+                <p class="text-lightMuted dark:text-darkMuted text-sm sm:text-base mt-2 max-w-2xl">
+                    Completează datele de mai jos pentru a rezerva o vizită în atelier. Un consilier tehnic te va
+                    contacta pentru confirmare.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+                <form id="appointment-form"
+                    class="lg:col-span-7 bg-lightBg dark:bg-darkBg border border-lightBorder dark:border-darkBorder p-6 sm:p-8 space-y-5">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="f-name" class="block font-mono text-xs font-semibold uppercase mb-2">Nume &
+                                Prenume *</label>
+                            <input type="text" id="f-name" required placeholder="Ex: Andrei Popescu"
+                                class="w-full min-h-[46px] px-3.5 bg-lightSurface dark:bg-darkSurface border border-lightBorder dark:border-darkBorder focus:border-accent focus:outline-none text-sm">
+                        </div>
+                        <div>
+                            <label for="f-phone" class="block font-mono text-xs font-semibold uppercase mb-2">Telefon
+                                *</label>
+                            <input type="tel" id="f-phone" required placeholder="Ex: 0722 000 000"
+                                class="w-full min-h-[46px] px-3.5 bg-lightSurface dark:bg-darkSurface border border-lightBorder dark:border-darkBorder focus:border-accent focus:outline-none text-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="f-car" class="block font-mono text-xs font-semibold uppercase mb-2">Nr.
+                                Înmatriculare / Model Auto *</label>
+                            <input type="text" id="f-car" required placeholder="Ex: B 101 PAS — VW Passat 2.0 TDI"
+                                class="w-full min-h-[46px] px-3.5 bg-lightSurface dark:bg-darkSurface border border-lightBorder dark:border-darkBorder focus:border-accent focus:outline-none text-sm">
+                        </div>
+                        <div>
+                            <label for="f-date" class="block font-mono text-xs font-semibold uppercase mb-2">Data
+                                Preferată *</label>
+                            <input type="date" id="f-date" required
+                                class="w-full min-h-[46px] px-3.5 bg-lightSurface dark:bg-darkSurface border border-lightBorder dark:border-darkBorder focus:border-accent focus:outline-none text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="f-service" class="block font-mono text-xs font-semibold uppercase mb-2">Serviciul
+                            Dorit / Deviz Preluat *</label>
+                        <input type="text" id="f-service" required
+                            placeholder="Ex: Revizie periodică, Diagnoză motor..."
+                            class="w-full min-h-[46px] px-3.5 bg-lightSurface dark:bg-darkSurface border border-lightBorder dark:border-darkBorder focus:border-accent focus:outline-none text-sm">
+                    </div>
+
+                    <div>
+                        <label for="f-notes" class="block font-mono text-xs font-semibold uppercase mb-2">Observații
+                            Suplimentare (Opțional)</label>
+                        <textarea id="f-notes" rows="3"
+                            placeholder="Serie șasiu (VIN), simptome observate sau interval orar preferat..."
+                            class="w-full p-3.5 bg-lightSurface dark:bg-darkSurface border border-lightBorder dark:border-darkBorder focus:border-accent focus:outline-none text-sm"></textarea>
+                    </div>
+
+                    <div id="form-alert"
+                        class="hidden border-l-4 border-accent bg-accent/10 p-3.5 text-xs font-medium text-accent">
+                    </div>
+
+                    <button type="submit"
+                        class="w-full min-h-[48px] px-6 bg-accent hover:bg-accentHover text-white font-semibold text-sm transition-colors">
+                        Confirmă Solicitarea de Programare
+                    </button>
+                </form>
+
+                <div class="lg:col-span-5">
+
+                    <div id="booking-info-box"
+                        class="bg-lightBg dark:bg-darkBg border border-lightBorder dark:border-darkBorder p-6 sm:p-8 space-y-5">
+                        <div class="font-mono text-xs font-bold uppercase text-accent">
+                            INFORMAȚII RECEPȚIE
+                        </div>
+                        <h3 class="font-display font-bold text-xl">Cum decurge vizita în service?</h3>
+                        <ul class="space-y-3.5 text-sm text-lightMuted dark:text-darkMuted">
+                            <li class="flex items-start gap-3">
+                                <span class="font-mono text-xs font-bold text-accent mt-0.5">01.</span>
+                                <span>Primești un cod de referință imediat după trimiterea formularului.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="font-mono text-xs font-bold text-accent mt-0.5">02.</span>
+                                <span>Te contactăm telefonic în max. 30 de minute pentru confirmarea orei exacte.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="font-mono text-xs font-bold text-accent mt-0.5">03.</span>
+                                <span>La recepție întocmim fișa de intrare și verificăm vehiculul pe rampă.</span>
+                            </li>
+                        </ul>
+                        <div
+                            class="pt-4 border-t border-lightBorder dark:border-darkBorder text-xs font-mono text-lightMuted dark:text-darkMuted">
+                            AI O URGENȚĂ TEHNICĂ? SUNĂ LA <a href="tel:+40722123456"
+                                class="text-accent font-bold underline">0722 123 456</a>
+                        </div>
+                    </div>
+
+                    <div id="booking-ticket-box"
+                        class="hidden bg-lightBg dark:bg-darkBg border-2 border-accent p-6 sm:p-8 space-y-5">
+                        <div
+                            class="flex items-center justify-between border-b border-lightBorder dark:border-darkBorder pb-4">
+                            <span class="font-mono text-xs font-bold text-accent uppercase">PROGRAMARE
+                                ÎNREGISTRATĂ</span>
+                            <span
+                                class="px-2 py-0.5 bg-accent text-white font-mono text-[11px] font-bold">CONFIRMAT</span>
+                        </div>
+
+                        <div>
+                            <span class="block font-mono text-[11px] text-lightMuted dark:text-darkMuted uppercase">Cod
+                                Referință Vizită</span>
+                            <div id="ticket-ref" class="font-display font-bold text-3xl tracking-wide mt-1">
+                                PAS-2026-4812</div>
+                        </div>
+
+                        <dl class="space-y-2.5 text-sm border-t border-lightBorder dark:border-darkBorder pt-4">
+                            <div class="flex justify-between gap-4">
+                                <dt class="text-lightMuted dark:text-darkMuted">Client:</dt>
+                                <dd id="t-name" class="font-medium text-right"></dd>
+                            </div>
+                            <div class="flex justify-between gap-4">
+                                <dt class="text-lightMuted dark:text-darkMuted">Vehicul:</dt>
+                                <dd id="t-car" class="font-medium text-right"></dd>
+                            </div>
+                            <div class="flex justify-between gap-4">
+                                <dt class="text-lightMuted dark:text-darkMuted">Data dorită:</dt>
+                                <dd id="t-date" class="font-mono font-semibold text-accent text-right"></dd>
+                            </div>
+                            <div class="pt-2 border-t border-lightBorder dark:border-darkBorder">
+                                <dt class="text-lightMuted dark:text-darkMuted text-xs font-mono uppercase mb-1">
+                                    Servicii solicitate:</dt>
+                                <dd id="t-service" class="text-sm font-medium"></dd>
+                            </div>
+                        </dl>
+
+                        <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                            <button type="button" onclick="copyRefCode()"
+                                class="flex-1 min-h-[44px] px-4 border border-lightBorder dark:border-darkBorder hover:border-accent font-mono text-xs font-semibold uppercase transition-colors">
+                                Copiază Cod Referință
+                            </button>
+                            <button type="button" onclick="resetBookingForm()"
+                                class="min-h-[44px] px-4 bg-lightSurface dark:bg-darkSurface hover:border-accent border border-lightBorder dark:border-darkBorder font-mono text-xs font-semibold uppercase transition-colors">
+                                Programare Nouă
+                            </button>
+                        </div>
+                        <div id="copy-msg" class="hidden font-mono text-xs text-accent text-center">
+                            Codul a fost copiat în clipboard.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-lightBg dark:bg-darkBg py-14">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div
+                class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-lightBorder dark:border-darkBorder">
+
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-7 h-7 bg-accent flex items-center justify-center">
+                            <div class="w-3 h-3 border-2 border-white"></div>
+                        </div>
+                        <span class="font-display font-bold text-lg uppercase tracking-tight">
+                            PROMPT <span class="text-accent">AUTO</span> SERVICE
+                        </span>
+                    </div>
+                    <p class="text-sm text-lightMuted dark:text-darkMuted leading-relaxed max-w-sm">
+                        Atelier multimarcă de mecanică auto, geometrie 3D și diagnoză electronică. Precizie,
+                        transparență și garanție pentru fiecare kilometru.
+                    </p>
+                </div>
+
+                <div class="space-y-2.5 text-sm">
+                    <h4
+                        class="font-mono text-xs font-bold uppercase tracking-wider text-lightText dark:text-darkText mb-3">
+                        Contact & Locație
+                    </h4>
+                    <p class="text-lightMuted dark:text-darkMuted">Șos. Industriilor Nr. 48, Sector 3, București</p>
+                    <p class="text-lightMuted dark:text-darkMuted">
+                        Telefon: <a href="tel:+40722123456"
+                            class="text-lightText dark:text-darkText font-semibold hover:text-accent">0722 123 456</a>
+                    </p>
+                    <p class="text-lightMuted dark:text-darkMuted">
+                        Email: <a href="mailto:contact@promptautoservice.ro"
+                            class="hover:text-accent">contact@promptautoservice.ro</a>
+                    </p>
+                    <p class="text-lightMuted dark:text-darkMuted pt-1 font-mono text-xs">
+                        L–V: 08:00 – 18:00 | Sâm: 09:00 – 14:00
+                    </p>
+                </div>
+
+                <div class="space-y-2 text-sm">
+                    <h4
+                        class="font-mono text-xs font-bold uppercase tracking-wider text-lightText dark:text-darkText mb-3">
+                        Navigație Rapidă
+                    </h4>
+                    <ul class="space-y-2 text-lightMuted dark:text-darkMuted">
+                        <li><a href="#servicii" class="hover:text-accent transition-colors">Catalog Servicii &
+                                Tarife</a></li>
+                        <li><a href="#calculator" class="hover:text-accent transition-colors">Calculator Deviz
+                                Manoperă</a></li>
+                        <li><a href="#proces" class="hover:text-accent transition-colors">Standarde Tehnice</a></li>
+                        <li><a href="#programare" class="hover:text-accent transition-colors">Programare Online</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div
+                class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs font-mono text-lightMuted dark:text-darkMuted">
+                <span>&copy; 2026 PROMPT AUTO SERVICE. TOATE DREPTURILE REZERVATE.</span>
+                <span>AUTORIZAT RAR • BUCUREȘTI</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeLabel = document.getElementById('theme-label');
+        const iconSun = document.getElementById('icon-sun');
+        const iconMoon = document.getElementById('icon-moon');
+
+        function syncThemeUI() {
+            const isDark = document.documentElement.classList.contains('dark');
+            if (isDark) {
+                themeLabel.textContent = 'LIGHT';
+                iconSun.classList.remove('hidden');
+                iconMoon.classList.add('hidden');
+            } else {
+                themeLabel.textContent = 'DARK';
+                iconSun.classList.add('hidden');
+                iconMoon.classList.remove('hidden');
+            }
+        }
+        syncThemeUI();
+
+        themeToggleBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('pas-theme', isDark ? 'dark' : 'light');
+            syncThemeUI();
+        });
+
+        const mobileToggle = document.getElementById('mobile-menu-toggle');
+        const mobileDrawer = document.getElementById('mobile-drawer');
+        const hamburgerIcon = document.getElementById('hamburger-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        function toggleMobileMenu(forceClose = false) {
+            const isOpen = !mobileDrawer.classList.contains('hidden');
+            if (forceClose || isOpen) {
+                mobileDrawer.classList.add('hidden');
+                hamburgerIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+                mobileToggle.setAttribute('aria-expanded', 'false');
+            } else {
+                mobileDrawer.classList.remove('hidden');
+                hamburgerIcon.classList.add('hidden');
+                closeIcon.classList.remove('hidden');
+                mobileToggle.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        mobileToggle.addEventListener('click', () => toggleMobileMenu());
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => toggleMobileMenu(true));
+        });
+
+        const filterButtons = document.querySelectorAll('.srv-filter-btn');
+        const serviceCards = document.querySelectorAll('.srv-card');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-accent', 'text-white', 'border-accent');
+                    b.classList.add('bg-lightSurface', 'dark:bg-darkSurface', 'border-lightBorder', 'dark:border-darkBorder');
+                });
+                btn.classList.remove('bg-lightSurface', 'dark:bg-darkSurface', 'border-lightBorder', 'dark:border-darkBorder');
+                btn.classList.add('bg-accent', 'text-white', 'border-accent');
+
+                const category = btn.getAttribute('data-filter');
+                serviceCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-cat') === category) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        let latestEstimateText = '';
+
+        function updateEstimator() {
+            const fuelMult = parseFloat(document.querySelector('input[name="fuel_type"]:checked').value);
+            const checkedBoxes = document.querySelectorAll('#estimator-list input[type="checkbox"]:checked');
+            const summaryList = document.getElementById('summary-items');
+            summaryList.innerHTML = '';
+
+            let totalCost = 0;
+            let totalHours = 0;
+            const selectedTitles = [];
+
+            if (checkedBoxes.length === 0) {
+                summaryList.innerHTML = '<li class="text-lightMuted dark:text-darkMuted italic">Selectează cel puțin o operațiune din stânga.</li>';
+            } else {
+                checkedBoxes.forEach(box => {
+                    const title = box.getAttribute('data-title');
+                    const baseCost = parseFloat(box.getAttribute('data-cost'));
+                    const hours = parseFloat(box.getAttribute('data-time'));
+                    const adjustedCost = Math.round(baseCost * fuelMult);
+
+                    totalCost += adjustedCost;
+                    totalHours += hours;
+                    selectedTitles.push(title);
+
+                    const li = document.createElement('li');
+                    li.className = 'flex justify-between items-center gap-2';
+                    li.innerHTML = `<span>${title}</span><span class="font-mono font-semibold whitespace-nowrap">${adjustedCost} RON</span>`;
+                    summaryList.appendChild(li);
+                });
+            }
+
+            document.getElementById('summary-time').textContent = `${totalHours.toFixed(1)} ore`;
+            document.getElementById('summary-total').textContent = totalCost;
+
+            latestEstimateText = selectedTitles.length > 0
+                ? `${selectedTitles.join(', ')} (Estimare: ${totalCost} RON)`
+                : '';
+        }
+
+        function clearEstimator() {
+            document.querySelectorAll('#estimator-list input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelector('input[name="fuel_type"][value="1.0"]').checked = true;
+            updateEstimator();
+        }
+
+        function quickAddService(key) {
+            const checkbox = document.querySelector(`#estimator-list input[data-key="${key}"]`);
+            if (checkbox) {
+                checkbox.checked = true;
+                updateEstimator();
+            }
+            document.getElementById('calculator').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function sendEstimateToForm() {
+            updateEstimator();
+            if (latestEstimateText) {
+                document.getElementById('f-service').value = latestEstimateText;
+            }
+            document.getElementById('programare').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        updateEstimator();
+
+        const dateField = document.getElementById('f-date');
+        const today = new Date().toISOString().split('T')[0];
+        dateField.setAttribute('min', today);
+        dateField.value = today;
+
+        const appointmentForm = document.getElementById('appointment-form');
+        const formAlert = document.getElementById('form-alert');
+
+        appointmentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            formAlert.classList.add('hidden');
+
+            const name = document.getElementById('f-name').value.trim();
+            const phone = document.getElementById('f-phone').value.trim();
+            const car = document.getElementById('f-car').value.trim();
+            const date = document.getElementById('f-date').value;
+            const service = document.getElementById('f-service').value.trim();
+
+            if (phone.replace(/\D/g, '').length < 9) {
+                formAlert.textContent = 'Te rugăm să introduci un număr de telefon valid (minim 9 cifre).';
+                formAlert.classList.remove('hidden');
+                return;
+            }
+
+            const randomCode = Math.floor(1000 + Math.random() * 9000);
+            const refCode = `PAS-2026-${randomCode}`;
+
+            document.getElementById('ticket-ref').textContent = refCode;
+            document.getElementById('t-name').textContent = `${name} (${phone})`;
+            document.getElementById('t-car').textContent = car;
+            document.getElementById('t-date').textContent = date;
+            document.getElementById('t-service').textContent = service;
+
+            document.getElementById('booking-info-box').classList.add('hidden');
+            document.getElementById('booking-ticket-box').classList.remove('hidden');
+            document.getElementById('copy-msg').classList.add('hidden');
+        });
+
+        function copyRefCode() {
+            const code = document.getElementById('ticket-ref').textContent;
+            const temp = document.createElement('input');
+            temp.value = code;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            document.getElementById('copy-msg').classList.remove('hidden');
+        }
+
+        function resetBookingForm() {
+            appointmentForm.reset();
+            dateField.value = today;
+            document.getElementById('booking-ticket-box').classList.add('hidden');
+            document.getElementById('booking-info-box').classList.remove('hidden');
+        }
+    </script>
+</body>
+
+</html>
